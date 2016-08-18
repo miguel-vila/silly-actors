@@ -22,8 +22,8 @@ void queue_push(Queue *queue, void *data) {
       queue->last->next = new;
       queue->last = new;
     }
+    pthread_cond_signal(&queue->non_empty_cond);
   pthread_mutex_unlock(&queue->lock);
-  pthread_cond_signal(&queue->non_empty_cond);
 }
 
 void *queue_dequeue(Queue *queue) {
@@ -39,7 +39,7 @@ void *queue_dequeue(Queue *queue) {
     } else {
       queue->head = queue->head->next;
     }
-    void * result = head->data;
+    void *result = head->data;
     free(head);
   pthread_mutex_unlock(&queue->lock);
   return result;
