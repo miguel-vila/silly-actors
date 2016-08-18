@@ -27,12 +27,12 @@ void queue_push(Queue *queue, void *data) {
 }
 
 void *queue_dequeue(Queue *queue) {
+  printf("queue_ dequeuing\n");
   pthread_mutex_lock(&queue->lock);
-    printf("Waiting for an element on the queue...\n");
+    printf("waiting to dequeue\n");
     while(queue->head == NULL) {
       pthread_cond_wait(&queue->non_empty_cond, &queue->lock);
     }
-    printf("Dequeueing...\n");
     struct Node* head = queue->head;
     if(queue->head == queue->last) {
       queue->head = queue->last = NULL;
@@ -46,7 +46,21 @@ void *queue_dequeue(Queue *queue) {
 }
 
 void queue_destroy(Queue *queue) {
-  //@TODO
+  free(&queue->lock);  
+  free(&queue->non_empty_cond);
+
+  struct Node *node = queue->head;
+  while(node != NULL) {
+    struct Node *next = node->next;
+    //free(node->data);
+    free(node->next); // <- ???
+    free(node);
+    node = next;
+  }
+
+  free(&queue->head);
+  free(&queue->last);
+  free(queue);
 }
 
 /*
