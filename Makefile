@@ -5,7 +5,10 @@ CFLAGS  = -lpthread -g
 default: actortest
 
 actortest: $(OBJECTS)
-	gcc -o $@ $^ $(CFLAGS)
+	gcc -g -o $@ $^ $(CFLAGS)
+
+run:
+	./actortest
 
 clean:
 	rm -f *.o actortest

@@ -19,4 +19,9 @@ typedef struct
   struct Node* last;
 } Queue;
 
+Queue *queue_create();
+void queue_push(Queue *queue, void *data);
+void *queue_dequeue(Queue *queue);
+void queue_destroy(Queue *queue);
+
 #endif // __QUEUE_H__

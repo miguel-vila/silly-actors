@@ -12,7 +12,7 @@ Queue *queue_create() {
 void queue_push(Queue *queue, void *data) {
   struct Node* new = (struct Node*)malloc(sizeof(struct Node));
   
-  new->data = data; 
+  new->data = data;
   new->next = NULL;
 
   pthread_mutex_lock(&queue->lock);
@@ -27,9 +27,7 @@ void queue_push(Queue *queue, void *data) {
 }
 
 void *queue_dequeue(Queue *queue) {
-  printf("queue_ dequeuing\n");
   pthread_mutex_lock(&queue->lock);
-    printf("waiting to dequeue\n");
     while(queue->head == NULL) {
       pthread_cond_wait(&queue->non_empty_cond, &queue->lock);
     }
@@ -52,7 +50,6 @@ void queue_destroy(Queue *queue) {
   struct Node *node = queue->head;
   while(node != NULL) {
     struct Node *next = node->next;
-    //free(node->data);
     free(node->next); // <- ???
     free(node);
     node = next;
