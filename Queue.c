@@ -2,10 +2,12 @@
 
 Queue *queue_create() {
   Queue *queue = malloc(sizeof(Queue));
-  pthread_mutex_init(&queue->lock, NULL); // Default values?
+  pthread_mutex_init(&queue->head_lock, NULL); // Default values?
+  pthread_mutex_init(&queue->tail_lock, NULL); // Default values?
   pthread_cond_init(&queue->non_empty_cond, NULL);
-  queue->head = NULL;
-  queue->last = NULL;
+  struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+  node->next = NULL;
+  queue->head = queue->last = node;
   return queue;
 }
 
@@ -15,36 +17,30 @@ void queue_push(Queue *queue, void *data) {
   new->data = data;
   new->next = NULL;
 
-  pthread_mutex_lock(&queue->lock);
-    if(queue->head == NULL && queue->last == NULL){
-      queue->head = queue->last = new;
-    } else {
-      queue->last->next = new;
-      queue->last = new;
-    }
+  pthread_mutex_lock(&queue->tail_lock);
+    queue->last->next = new;
+    queue->last = new;
     pthread_cond_signal(&queue->non_empty_cond);
-  pthread_mutex_unlock(&queue->lock);
+  pthread_mutex_unlock(&queue->tail_lock);
 }
 
 void *queue_dequeue(Queue *queue) {
-  pthread_mutex_lock(&queue->lock);
-    while(queue->head == NULL) {
-      pthread_cond_wait(&queue->non_empty_cond, &queue->lock);
+  pthread_mutex_lock(&queue->head_lock);
+    while(queue->head->next == NULL) {
+      pthread_cond_wait(&queue->non_empty_cond, &queue->head_lock);
     }
-    struct Node* head = queue->head;
-    if(queue->head == queue->last) {
-      queue->head = queue->last = NULL;
-    } else {
-      queue->head = queue->head->next;
-    }
-    void *result = head->data;
-    free(head);
-  pthread_mutex_unlock(&queue->lock);
-  return result;
+    struct Node *node     = queue->head;
+    struct Node *new_head = node->next;
+    void *data = new_head->data;
+    queue->head = new_head;
+  pthread_mutex_unlock(&queue->head_lock);
+  free(node);
+  return data;
 }
 
 void queue_destroy(Queue *queue) {
-  free(&queue->lock);  
+  free(&queue->head_lock);  
+  free(&queue->tail_lock);  
   free(&queue->non_empty_cond);
 
   struct Node *node = queue->head;
@@ -52,7 +48,7 @@ void queue_destroy(Queue *queue) {
     struct Node *next = node->next;
     free(node->next); // <- ???
     free(node);
-    node = next;
+     node = next;
   }
 
   free(&queue->head);

@@ -9,11 +9,12 @@ struct Node
 {
   void *data;
   struct Node* next;
-} ;
+};
 
 typedef struct
 {
-  pthread_mutex_t lock;
+  pthread_mutex_t head_lock;
+  pthread_mutex_t tail_lock;
   pthread_cond_t non_empty_cond;
   struct Node* head;
   struct Node* last;
