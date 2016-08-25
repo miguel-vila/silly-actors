@@ -44,6 +44,8 @@ void test(void* input, size_t size, void *expected_output, size_t expected_outpu
 
 	if(byte != exp_byte) {
 	  printf("ERROR AT %zu th BYTE\n", expected_index);
+	  printf("Expected %u\n", exp_byte);
+	  printf("Got %u\n", byte);
 	  exit(1);
 	}
     }
@@ -125,4 +127,52 @@ int main(int argc, char const *argv[]) {
 
   printf("STARTING TEST\n");
   test(input3, sizeof(input3), expected_output3, sizeof(expected_output3));
+
+  unsigned char input4[] = {
+    0x05,
+    0x03,
+    0x02,
+    0x00, //--
+    0x11,
+    0x34,
+    0x87,
+    0x00, //--
+    0x23,
+    0x00  //--
+  };
+  unsigned char expected_output4[] = {
+    0x04,
+    0x05,
+    0x03,
+    0x02,
+    0x04, //--
+    0x11,
+    0x34,
+    0x87,
+    0x02, //--
+    0x23,
+    0x01, //--
+    0x00
+  };
+
+  printf("STARTING TEST\n");
+  test(input4, sizeof(input4), expected_output4, sizeof(expected_output4));
+
+  unsigned char input5[] = {
+    0x00,
+    0x00,
+    0x00,
+    0x00
+  };
+  unsigned char expected_output5[] = {
+    0x01,
+    0x01,
+    0x01,
+    0x01,
+    0x01,
+    0x00
+  };
+
+  printf("STARTING TEST\n");
+  test(input5, sizeof(input5), expected_output5, sizeof(expected_output5));
 }
