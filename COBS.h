@@ -9,8 +9,8 @@ typedef void (*SocketCallback)(void*, size_t);
 typedef void (*ActorCallback)(void*, size_t);
 
 static const int INIT = 0;
-static const int DECODING = 1;
-static const int CHUNK_END = 2;
+static const int CHUNK_BEG = 1;
+static const int COPYING = 2;
 
 typedef struct
 {
