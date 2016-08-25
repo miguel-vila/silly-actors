@@ -1,4 +1,4 @@
-SOURCES = main.c Queue.c Actor.c
+SOURCES = main.c Queue.c Actor.c COBS.c
 OBJECTS = $(SOURCES:.c=.o)
 CFLAGS  = -lpthread -g
 
