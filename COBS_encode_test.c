@@ -4,6 +4,7 @@
 #include "COBS.h"
 
 void test(void* input, size_t size, void *expected_output, size_t expected_output_size) {
+  printf("STARTING TEST\n");
   size_t expected_index = 0;
 
   /*
@@ -51,6 +52,8 @@ void test(void* input, size_t size, void *expected_output, size_t expected_outpu
     printf("EVERYTHING WENT WELL?\n");
   } else {
     printf("ERROR: missing data\n");
+    printf("Expected %zu bytes\n", expected_output_size);
+    printf("Got %zu bytes\n", expected_index);
     exit(1);
   }
 }
@@ -70,7 +73,6 @@ int main(int argc, char const *argv[]) {
     0x00
   };
 
-  printf("STARTING TEST\n");
   test(input1, sizeof(input1), expected_output1, sizeof(expected_output1));
 
   unsigned char input2[] = {
@@ -90,7 +92,6 @@ int main(int argc, char const *argv[]) {
     0x00
   };
 
-  printf("STARTING TEST\n");
   test(input2, sizeof(input2), expected_output2, sizeof(expected_output2));
 
   unsigned char input3[] = {
@@ -120,7 +121,6 @@ int main(int argc, char const *argv[]) {
     0x00
   };
 
-  printf("STARTING TEST\n");
   test(input3, sizeof(input3), expected_output3, sizeof(expected_output3));
 
   unsigned char input4[] = {
@@ -150,7 +150,6 @@ int main(int argc, char const *argv[]) {
     0x00
   };
 
-  printf("STARTING TEST\n");
   test(input4, sizeof(input4), expected_output4, sizeof(expected_output4));
 
   unsigned char input5[] = {
@@ -168,6 +167,25 @@ int main(int argc, char const *argv[]) {
     0x00
   };
 
-  printf("STARTING TEST\n");
   test(input5, sizeof(input5), expected_output5, sizeof(expected_output5));
+
+  unsigned char input6[300];
+  int i;
+  for(i = 0; i < 300; i++) {
+    // this is to guarantee that each element in the input is non-zero
+    input6[i] = (i%255)+1;
+  }
+  unsigned char expected_output6[303];
+  expected_output6[0] = 255;
+  for(i = 1; i <=254; i++) {
+    expected_output6[i] = input6[i-1];
+  }
+  expected_output6[i] = 47;
+  i++;
+  for(; i<=1+254+1+46; i++) {
+    expected_output6[i] = input6[i-2];
+  }
+  expected_output6[i] = 0;
+  //print_bytes(expected_output6, sizeof(expected_output6));
+  test(input6, sizeof(input6), expected_output6, sizeof(expected_output6));
 }
