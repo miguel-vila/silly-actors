@@ -1,5 +1,7 @@
 # silly-actors
 
+[![Build Status](https://travis-ci.org/miguel-vila/silly-actors.svg?branch=master)](https://travis-ci.org/miguel-vila/silly-actors)
+
 A small library to create and communicate [actors](https://en.wikipedia.org/wiki/Actor_model) on C.
 
 ## Create actors
