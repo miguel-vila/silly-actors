@@ -30,6 +30,39 @@ To send a message to an actor you must pass three parameters: the receiver actor
 int message = 42;
 actor_send(actor, &message, sizeof(int));
 ```
+
+## On remote nodes
+
+If you want to send and receive messages through a network you can do something like this:
+
+On the side you want to expose the actor you can call the function `actor_expose` which receives a pointer to the actor and a port number:
+
+```c
+Actor *actor = actor_create(actor_callback, actor_state);
+if(!actor_expose(actor, 6666)) {
+  fprintf(stderr, "NOOOOOO!");
+  exit(1);
+}
+printf("Actor exposed!\n");
+```
+
+And on the sending side you first call the function `actor_create_remote_ref` with the hostname and the port where you exposed the actor and then you can call`actor_remote_send` sending the remote reference to the actor, the message and it's size:
+
+```c
+char *hostname = "localhost";
+int port = 6666;
+RemoteActorRef *remote_actor_ref = actor_create_remote_ref(hostname, port);
+int *message = malloc(sizeof(int));
+*message = 123;
+if(!actor_remote_send(remote_actor_ref, message, sizeof(int))) {
+  fprintf(stderr, "NOOOOOOOOOOOOOOO");
+  exit(1);
+}
+printf("SENDED!\n");
+```
+
 ## @TODO
 
-Try to make it work accross multiple nodes.
+* Make it more efficient w.r.t the use of threads.
+* Maybe a non-blocking queue implementation.
+
