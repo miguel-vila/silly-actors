@@ -17,8 +17,7 @@ void encode_and_send(void *msg, size_t size, SocketCallback write_to_socket){
 	write_to_socket(&buffer, i);
 	i = 1;
       }
-    }
-    if(val == 0) {
+    } else if(val == 0) {
       buffer[0] = i;
       write_to_socket(&buffer, i);
       i = 1;
@@ -29,7 +28,14 @@ void encode_and_send(void *msg, size_t size, SocketCallback write_to_socket){
   write_to_socket(&buffer, i+1);
 }
 
-void decode_and_send_to_actor(unsigned char byte, ActorCallback send_to_actor, DecodeState *decode_state) {
+void decode_bytes(void *bytes, size_t size, ActorCallback send_to_actor, DecodeState *decode_state) {
+  for(size_t j = 0; j<size; j++) {
+    unsigned char byte = *((unsigned char*)bytes+j);
+    decode_step(byte, send_to_actor, decode_state);
+  }  
+}
+
+void decode_step(unsigned char byte, ActorCallback send_to_actor, DecodeState *decode_state) {
   int state = decode_state->state;
   if(state == INIT) {
     decode_state->put_zero = (byte != 0xFF);
@@ -70,6 +76,6 @@ void decode_and_send_to_actor(unsigned char byte, ActorCallback send_to_actor, D
 void print_bytes(void *whatev, size_t size) {
   for(size_t j = 0; j<size; j++) {
     unsigned char byte = *((unsigned char*)whatev+j);
-    printf("%u,\n", (unsigned)byte);
+    printf("%zu -> %u,\n", j, (unsigned)byte);
   }
 }
