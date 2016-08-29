@@ -188,4 +188,29 @@ int main(int argc, char const *argv[]) {
   expected_output6[i] = 0;
   //print_bytes(expected_output6, sizeof(expected_output6));
   test(input6, sizeof(input6), expected_output6, sizeof(expected_output6));
+
+  /*
+  unsigned char input7[600];
+  for(i = 0; i < 600; i++) {
+    // this is to guarantee that each element in the input is non-zero
+    input7[i] = (i%255)+1;
+  }
+  unsigned char expected_output7[604];
+  expected_output7[0] = 255;
+  for(i = 1; i <=254; i++) {
+    expected_output7[i] = input7[i-1];
+  }
+  expected_output7[i] = 255;
+  for(i = i+1; i <= 1 + 254 + 1 + 254; i++) {
+    expected_output7[i] = input7[i-2];
+  }
+  expected_output7[i] = 93;
+  for(i = i+1; i<=1+254+1+254+1+92; i++) {
+    expected_output7[i] = input7[i-3];
+  }
+  expected_output7[i] = 0;
+  print_bytes(expected_output7, sizeof(expected_output7));
+  test(input7, sizeof(input7), expected_output7, sizeof(expected_output7));
+  */
+
 }
