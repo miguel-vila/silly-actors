@@ -11,7 +11,7 @@ TEST1_SENDER_OBJECTS = $(TEST1_SENDER:.c=.o)
 TEST_COBS_ENCODING = $(BASE) COBS_encode_test.c
 TEST_COBS_ENCODING_OBJECTS = $(TEST_COBS_ENCODING:.c=.o)
 
-CFLAGS  = -lpthread -g
+CFLAGS  = -lpthread -g -std=gnu99
 
 default: actortest
 
