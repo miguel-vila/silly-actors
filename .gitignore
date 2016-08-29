@@ -4,3 +4,4 @@ actortest
 \#*.*\#
 test1_receiver
 test1_sender
+test_cobs_encoding
