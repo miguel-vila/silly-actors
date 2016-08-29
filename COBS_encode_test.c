@@ -213,4 +213,6 @@ int main(int argc, char const *argv[]) {
   test(input7, sizeof(input7), expected_output7, sizeof(expected_output7));
   */
 
+  exit(1);
+
 }
