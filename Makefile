@@ -1,11 +1,11 @@
-# how to leave *.o files inside other folder?
+# how to leave *.o and executable files inside other folder?
 # how to structure the tests?
 
 CC=gcc
 
 BASE = $(wildcard src/**/*.c src/[^main]*.c)
 SOURCES = $(BASE) src/main.c
-OBJECTS = $(patsubst %.c,%.o,$(SOURCES))
+OBJECTS = $(SOURCES:.c=.o)
 
 TEST1_RECEIVER = $(BASE) examples/Example1_remote_actor_receiver.c
 TEST1_RECEIVER_OBJECTS = $(TEST1_RECEIVER:.c=.o)
@@ -27,7 +27,7 @@ CFLAGS  = -lpthread -g -std=gnu99
 default: actortest
 
 actortest: $(OBJECTS)
-	gcc -g -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS)
 
 run:
 	./actortest
@@ -42,9 +42,11 @@ test1_sender: $(TEST1_SENDER_OBJECTS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 test_cobs_encoding: $(TEST_COBS_ENCODING_OBJECTS)
-	$(CC) -o $@ $^ $(CFLAGS) ; ./test_cobs_encoding
+	$(CC) -o $@ $^ $(CFLAGS)
+	./test_cobs_encoding
 
 test_simple_actor: $(TEST_SIMPLE_ACTOR)
-	$(CC) -o $@ $^ $(CFLAGS) ; ./test_simple_actor
+	$(CC) -o $@ $^ $(CFLAGS)
+	./test_simple_actor
 
 tests: clean test_simple_actor test_cobs_encoding
