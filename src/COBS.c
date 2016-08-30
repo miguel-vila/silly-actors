@@ -1,6 +1,9 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "COBS.h"
+
+#define MAX_BUFFER_SIZE 2000
 
 void encode_and_send(void *msg, size_t size, SocketCallback write_to_socket){
   char buffer[255];
@@ -26,6 +29,18 @@ void encode_and_send(void *msg, size_t size, SocketCallback write_to_socket){
   buffer[0] = i;
   buffer[i] = 0;
   write_to_socket(&buffer, i+1);
+}
+
+DecodeState *init_decode_state() {
+  DecodeState *decode_state = malloc(sizeof(DecodeState));
+
+  decode_state->buffer = malloc(MAX_BUFFER_SIZE);
+  decode_state->i = 0;
+  decode_state->non_zero_count = 0;
+  decode_state->state = INIT;
+  decode_state->put_zero = false;
+
+  return decode_state;
 }
 
 void decode_bytes(void *bytes, size_t size, ActorCallback send_to_actor, DecodeState *decode_state) {
