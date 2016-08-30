@@ -19,7 +19,7 @@ int main(int argc, char const *argv[]) {
     fprintf(stderr, "NOOOOOO!");
     exit(1);
   }
-  printf("Actor exposed!\n");
+  printf("Actor listening!\n");
   sleep(10);
   // expecting just 1 message
   if(*actor_state != 123 + 42) {
