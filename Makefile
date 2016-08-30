@@ -1,4 +1,4 @@
-BASE = Queue.c Actor.c COBS.c
+BASE = Queue.c Actor.c COBS.c RemoteActor.c Utils.c
 SOURCES = $(BASE) main.c
 OBJECTS = $(SOURCES:.c=.o)
 

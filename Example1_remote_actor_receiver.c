@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Actor.h"
 #include <pthread.h>
 #include <unistd.h>
+#include "RemoteActor.h"
 
 void adder_actor(Actor *self, void *message) {
   int *state = (int*)self->state;
@@ -15,7 +15,7 @@ int main(int argc, char const *argv[]) {
   int* actor_state = malloc(sizeof(int));
   *actor_state = 42;
   Actor *actor = actor_create(adder_actor, actor_state);
-  if(!actor_expose(actor, 6666)) {
+  if(!remote_actor_listen(actor, 6666)) {
     fprintf(stderr, "NOOOOOO!");
     exit(1);
   }
