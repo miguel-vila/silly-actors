@@ -1,7 +1,7 @@
-#include "Actor.h"
+#include "../src/Actor.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "COBS.h"
+#include "../src/COBS.h"
 
 void test(void* input, size_t size, void *expected_output, size_t expected_output_size) {
   printf("STARTING TEST\n");

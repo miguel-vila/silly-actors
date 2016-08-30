@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
-#include "RemoteActor.h"
+#include "../src/RemoteActor.h"
 
 int main(int argc, char const *argv[]) {
   char *hostname = "localhost";

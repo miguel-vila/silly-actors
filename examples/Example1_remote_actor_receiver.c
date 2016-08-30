@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
-#include "RemoteActor.h"
+#include "../src/RemoteActor.h"
 
 void adder_actor(Actor *self, void *message) {
   int *state = (int*)self->state;

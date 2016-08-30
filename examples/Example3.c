@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Actor.h"
+#include "../src/Actor.h"
 #include <pthread.h>
 #include <unistd.h>
 
