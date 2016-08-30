@@ -31,4 +31,6 @@ void decode_step(unsigned char byte, ActorCallback send_to_actor, DecodeState *d
 
 void print_bytes(void *whatev, size_t size);
 
+void print_decode_state(DecodeState *decode_state);
+
 #endif // __COBS_H__

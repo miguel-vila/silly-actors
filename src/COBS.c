@@ -85,6 +85,7 @@ void decode_step(unsigned char byte, ActorCallback send_to_actor, DecodeState *d
       }
     }
   }
+  print_decode_state(decode_state);
 }
 
 // for debugging
@@ -93,4 +94,12 @@ void print_bytes(void *whatev, size_t size) {
     unsigned char byte = *((unsigned char*)whatev+j);
     printf("%zu -> %u,\n", j, (unsigned)byte);
   }
+}
+
+void print_decode_state(DecodeState *decode_state) {
+  printf("DECODE STATE\n");
+  printf("\ti = %zu\n", decode_state->i);
+  printf("\tnon_zero_count = %i\n", decode_state->non_zero_count);
+  printf("\tstate = %i\n", decode_state->state);
+  printf("\tput_zero = %i\n", decode_state->put_zero);
 }
