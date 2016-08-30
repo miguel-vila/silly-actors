@@ -46,3 +46,5 @@ test_cobs_encoding: $(TEST_COBS_ENCODING_OBJECTS)
 
 test_simple_actor: $(TEST_SIMPLE_ACTOR)
 	$(CC) -o $@ $^ $(CFLAGS) ; ./test_simple_actor
+
+tests: clean test_simple_actor test_cobs_encoding

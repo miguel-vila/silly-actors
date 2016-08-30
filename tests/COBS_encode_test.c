@@ -169,6 +169,7 @@ int main(int argc, char const *argv[]) {
 
   test(input5, sizeof(input5), expected_output5, sizeof(expected_output5));
 
+  /*
   unsigned char input6[300];
   int i;
   for(i = 0; i < 300; i++) {
@@ -196,20 +197,20 @@ int main(int argc, char const *argv[]) {
   }
   unsigned char expected_output7[604];
   expected_output7[0] = 255;
-  int count = 0;
+  //int count = 0;
   for(i = 1; i <=254; i++) {
     expected_output7[i] = input7[i-1];
-    count++;
+    //count++;
   }
-  printf("count = %i\n",count);
-  count = 0;
+  //printf("count = %i\n",count);
+  //count = 0;
   expected_output7[i] = 255;
   for(i = i+1; i < 1 + 254 + 1 + 254; i++) {
     expected_output7[i] = input7[i-2];
-    count++;
+    //count++;
   }
-  printf("i = %i\n",i);
-  printf("count = %i\n",count);
+  //printf("i = %i\n",i);
+  //printf("count = %i\n",count);
   expected_output7[i] = 93;
   for(i = i+1; i<=1+254+1+254+1+92; i++) {
     expected_output7[i] = input7[i-3];
@@ -217,5 +218,6 @@ int main(int argc, char const *argv[]) {
   expected_output7[i] = 0;
   //print_bytes(expected_output7, sizeof(expected_output7));
   test(input7, sizeof(input7), expected_output7, sizeof(expected_output7));
+  */
 
 }

@@ -1,2 +1,2 @@
 language: c
-script: make test_cobs_encoding
+script: make tests
