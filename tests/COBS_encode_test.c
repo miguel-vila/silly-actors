@@ -1,4 +1,3 @@
-#include "../src/Actor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "../src/COBS.h"

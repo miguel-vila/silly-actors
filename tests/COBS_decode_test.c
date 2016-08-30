@@ -124,4 +124,34 @@ int main(int argc, char const *argv[]) {
   };
   
   test_1_message(encoded3, sizeof(encoded3), original_message3, sizeof(original_message3));
+
+  /*
+  unsigned char original_message4[] = {
+    0x05,
+    0x03,
+    0x02,
+    0x00, //--
+    0x11,
+    0x34,
+    0x87,
+    0x00, //--
+    0x23,
+    0x00  //--
+  };
+  unsigned char encoded4[] = {
+    0x04,
+    0x05,
+    0x03,
+    0x02,
+    0x04, //--
+    0x11,
+    0x34,
+    0x87,
+    0x02, //--
+    0x23,
+    0x01, //--
+    0x00
+  };
+  test_1_message(encoded4, sizeof(encoded4), original_message4, sizeof(original_message4));
+  */
 }
