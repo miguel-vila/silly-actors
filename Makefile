@@ -2,37 +2,22 @@
 # how to structure the tests?
 
 CC=gcc
-
+LIB_NAME=actor_lib
 OBJDIR = obj
 
-BASE = $(wildcard src/**/*.c src/[^main]*.c)
-SOURCES = $(BASE) src/main.c
+SOURCES = $(wildcard src/**/*.c src/[^main]*.c)
 #OBJECTS = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 OBJECTS = $(SOURCES:.c=.o)
 
-TEST1_RECEIVER = $(BASE) examples/Example1_remote_actor_receiver.c
-TEST1_RECEIVER_OBJECTS = $(TEST1_RECEIVER:.c=.o)
-
-TEST1_SENDER = $(BASE) examples/Example1_remote_actor_sender.c
-TEST1_SENDER_OBJECTS = $(TEST1_SENDER:.c=.o)
-
-TEST_COBS_ENCODING = $(BASE) tests/COBS_encode_test.c
-TEST_COBS_ENCODING_OBJECTS = $(TEST_COBS_ENCODING:.c=.o)
-
-TEST_COBS_DECODING = $(BASE) tests/COBS_decode_test.c
-TEST_COBS_DECODING_OBJECTS = $(TEST_COBS_DECODING:.c=.o)
-
-TEST_SIMPLE_ACTOR = $(BASE) tests/simple_actor_test.c
-TEST_SIMPLE_ACTOR_OBJECTS = $(patsubst %.c,%.o,$(TEST_SIMPLE_ACTOR))
-
 CFLAGS  = -lpthread -g -std=gnu99
 
-default: actortest
+default: lib
 
 #main.o: src/main.c src/Actor.h src/Queue.h
 
-actortest: $(OBJECTS)
-	$(CC) -o $@ $^ $(CFLAGS)
+quick_test: lib
+	$(CC) -o $@ src/main.c $(LIB_NAME).a $(CFLAGS)
+	./$@
 
 #$(OBJECTS): $(SOURCES) src/Actor.h src/Queue.h
 #	$(CC) -c $@ $< $(CFLAGS)
@@ -40,32 +25,32 @@ actortest: $(OBJECTS)
 #$(OBJDIR)/$(FILE:a/%=%).o: %.c
 #	$(CC) -c $@ $< $(CFLAGS)
 
-$(OBJDIR)/%.o: %.c
-	$(CC) -c $@ $< $(CFLAGS)
-
-run:
-	./actortest
+#$(OBJDIR)/%.o: %.c
+#	$(CC) -c $@ $< $(CFLAGS)
 
 clean:
-	rm -f src/*.o tests/*.o actortest test_cobs_encoding test_cobs_decoding test_simple_actor 
+	rm -f src/*.o tests/*.o $(LIB_NAME).a actortest test_cobs_encoding test_cobs_decoding test_simple_actor 
 
-test1_receiver: $(TEST1_RECEIVER_OBJECTS)
-	$(CC) -o $@ $^ $(CFLAGS)
+lib: $(OBJECTS)
+	ar -cqv $(LIB_NAME).a $(OBJECTS)
 
-test1_sender: $(TEST1_SENDER_OBJECTS)
-	$(CC) -o $@ $^ $(CFLAGS)
+test1_receiver: lib
+	$(CC) -o $@ examples/Example1_remote_actor_receiver.c $(LIB_NAME).a $(CFLAGS)
 
-test_cobs_encoding: $(TEST_COBS_ENCODING_OBJECTS)
-	$(CC) -o $@ $^ $(CFLAGS)
-	./test_cobs_encoding
+test1_sender: lib
+	$(CC) -o $@ examples/Example1_remote_actor_sender.c $(LIB_NAME).a $(CFLAGS)
 
-test_cobs_decoding: $(TEST_COBS_DECODING_OBJECTS)
-	$(CC) -o $@ $^ $(CFLAGS)
-	./test_cobs_decoding
+test_cobs_encoding: lib
+	$(CC) -o $@ tests/COBS_encode_test.c $(LIB_NAME).a $(CFLAGS)
+	./$@
 
-test_simple_actor: $(TEST_SIMPLE_ACTOR)
-	$(CC) -o $@ $^ $(CFLAGS)
-	./test_simple_actor
+test_cobs_decoding: lib
+	$(CC) -o $@ tests/COBS_decode_test.c $(LIB_NAME).a $(CFLAGS)
+	./$@
+
+test_simple_actor: lib
+	$(CC) -o $@ tests/simple_actor_test.c $(LIB_NAME).a $(CFLAGS)
+	./$@
 
 tests: clean test_simple_actor test_cobs_encoding test_cobs_decoding
 

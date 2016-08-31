@@ -7,3 +7,6 @@ test1_sender
 test_cobs_encoding
 test_cobs_decoding
 test_simple_actor
+quick_test
+.depend
+*.a
