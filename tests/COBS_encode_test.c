@@ -5,6 +5,7 @@
 static int test_case = 1;
 
 void test(void* input, size_t size, void *expected_output, size_t expected_output_size) {
+  int dummy_socket_fd = 0;
   printf("STARTING TEST %i\n", test_case);
   size_t expected_index = 0;
 
@@ -18,7 +19,7 @@ void test(void* input, size_t size, void *expected_output, size_t expected_outpu
   printf("}\n");
   */
 
-  void socket_callback(void* buff, size_t size) {
+  void socket_callback(int socket_fd, void* buff, size_t size) {
     //printf("cb!\n");
 
     //printf("-- called with size %i\n",size);
@@ -48,7 +49,7 @@ void test(void* input, size_t size, void *expected_output, size_t expected_outpu
     }
   }
 
-  encode_and_send(input, size, socket_callback);
+  encode_and_send(input, size, socket_callback, dummy_socket_fd);
   if(expected_output_size == expected_index) {
     printf("TEST %i PASSED\n", test_case);
   } else {
@@ -191,6 +192,25 @@ int main(int argc, char const *argv[]) {
   expected_output6[i] = 0;
   //print_bytes(expected_output6, sizeof(expected_output6));
   test(input6, sizeof(input6), expected_output6, sizeof(expected_output6));
+
+  int *input7 = malloc(sizeof(int));
+  *input7 = 123;
+  //print_bytes(input7, sizeof(int));
+
+  unsigned char expected_output7[] = {
+    0x02,
+    0x7B,
+    0x01,
+    0x01,
+    0x01,
+    0x01,
+    0x01,
+    0x01,
+    0x01,
+    0x00
+  };
+
+  test(input7, sizeof(input7), expected_output7, sizeof(expected_output7));
 
   /*
   unsigned char input7[600];

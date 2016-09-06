@@ -19,7 +19,7 @@ lib: $(LIB_FILE)
 
 quick_test: $(LIB_FILE) src/main.c
 	$(CC) -o $@ src/main.c $(LIB_FILE) $(CFLAGS)
-	./$@
+#	./$@
 
 build/src/%.o: src/%.c
 	mkdir -p $(BUILD_DIR)/src
@@ -41,6 +41,12 @@ test1_receiver: lib examples/Example1_remote_actor_receiver.c
 
 test1_sender: lib examples/Example1_remote_actor_sender.c
 	$(CC) -o $@ examples/Example1_remote_actor_sender.c $(LIB_FILE) $(CFLAGS)
+
+test_multiple_receiver: lib examples/ExampleMultipleMessagesReceiver.c
+	$(CC) -o $@ examples/ExampleMultipleMessagesReceiver.c $(LIB_FILE) $(CFLAGS)
+
+test_multiple_sender: lib examples/ExampleMultipleMessagesSender.c
+	$(CC) -o $@ examples/ExampleMultipleMessagesSender.c $(LIB_FILE) $(CFLAGS)
 
 test_cobs_encoding: lib tests/COBS_encode_test.c
 	$(CC) -o $@ tests/COBS_encode_test.c $(LIB_FILE) $(CFLAGS)

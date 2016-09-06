@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "../src/COBS.h"
+#include "../src/Actor.h"
 
 void test_1_message(
 	  unsigned char *encoded,
@@ -10,7 +11,7 @@ void test_1_message(
 	  size_t original_message_size
 	  ) {
   bool was_called = false;
-  void actor_callback(void *message, size_t size) {
+  void actor_callback(Actor *actor, void *message, size_t size) {
     was_called = true;
     unsigned char *msg = (unsigned char*)message;
     for(size_t i = 0; i < size; i++) {
@@ -33,7 +34,7 @@ void test_1_message(
 
   }
 
-  decode_bytes(encoded, encoded_size, actor_callback);
+  decode_bytes(encoded, encoded_size, actor_callback, NULL);
 
   if(!was_called) {
     fprintf(stderr, "Callback was never called!\n");
@@ -50,7 +51,7 @@ void test_n_messages(
 		     int n
 		     ) {
   int exp_i = 0;
-  void actor_callback(void *message, size_t size) {
+  void actor_callback(Actor *actor, void *message, size_t size) {
     for(size_t i = 0; i < size; i++) {
       unsigned char decoded_byte = ((unsigned char*)message)[i];
       unsigned char expected_byte = ((unsigned char*)original_messages[exp_i])[i];
@@ -71,7 +72,7 @@ void test_n_messages(
     exp_i++;
   }
 
-  decode_bytes(encoded, encoded_size, actor_callback);
+  decode_bytes(encoded, encoded_size, actor_callback, NULL);
   if(exp_i != n) {
     fprintf(stderr, "Expected %i calls, got %i\n",n,exp_i+1);
     exit(1);
@@ -340,6 +341,21 @@ int main(int argc, char const *argv[]) {
     0x00
   };
   test_1_message(encoded4, sizeof(encoded4), original_message4, sizeof(original_message4));
+
+  /*
+  int *original_message5 = malloc(sizeof(int));
+  *original_message5 = 123;
+  unsigned char encoded5[] = {
+    0x02,
+    0x7B,
+    0x01,
+    0x01,
+    0x01,
+    0x00    
+  };
+
+  test_1_message(encoded5, sizeof(int), (unsigned char*)original_message5, sizeof(original_message5));
+  */
 
   test_multiple_messages_1();
   test_multiple_messages_2();
