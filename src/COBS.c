@@ -43,11 +43,19 @@ DecodeState *init_decode_state() {
   return decode_state;
 }
 
-void decode_bytes(void *bytes, size_t size, ActorCallback send_to_actor, DecodeState *decode_state) {
+void free_decode_state(DecodeState *decode_state) {
+  free(decode_state->buffer);
+  free(decode_state);
+}
+
+// for debugging
+void decode_bytes(void *bytes, size_t size, ActorCallback send_to_actor) {
+  DecodeState *decode_state = init_decode_state();
   for(size_t j = 0; j<size; j++) {
     unsigned char byte = *((unsigned char*)bytes+j);
     decode_step(byte, send_to_actor, decode_state);
-  }  
+  }
+  free_decode_state(decode_state);
 }
 
 void decode_step(unsigned char byte, ActorCallback send_to_actor, DecodeState *decode_state) {
@@ -55,37 +63,44 @@ void decode_step(unsigned char byte, ActorCallback send_to_actor, DecodeState *d
   if(state == INIT) {
     decode_state->put_zero = (byte != 0xFF);
     decode_state->non_zero_count = byte - 1;
-    decode_state->i=0;
+    decode_state->i = 0;
     decode_state->state = COPYING;
+  } else if(byte == 0) {
+    if(decode_state->non_zero_count != 0) {
+      // sanity check
+      fprintf(stderr, "ASSERT FAILED: non_zero_count should be zero when the byte is zero\n");
+      exit(1);
+    }
+    // we successfully read a message at this point
+    send_to_actor(decode_state->buffer, decode_state->i);
+    decode_state->state = INIT;	
   } else if(state == CHUNK_BEG) {
-    if(byte != 0) {
-      if(decode_state->put_zero) {
-	((unsigned char*)decode_state->buffer)[ decode_state->i ] = 0;
-	decode_state->i++;
-      }
-      decode_state->put_zero = (byte != 0xFF);
-      decode_state->non_zero_count = byte-1;
-      decode_state->state = COPYING;
-    } else {
-      // we successfully read a message at this point
-      send_to_actor(decode_state->buffer, decode_state->i);
-      decode_state->state = INIT;
+    if(decode_state->put_zero) {
+      ((unsigned char*)decode_state->buffer)[ decode_state->i ] = 0;
+      //printf("1 writing byte %u\n", 0);
+      decode_state->i++;
     }
+    decode_state->put_zero = (byte != 0xFF);
+    decode_state->non_zero_count = byte-1;
+    decode_state->state = COPYING;
   } else if(state == COPYING) {
-    if(byte != 0) {
-      if(decode_state->non_zero_count != 0) {
-	((unsigned char*)decode_state->buffer)[ decode_state->i ] = byte;
-	decode_state->non_zero_count--;
-	decode_state->i++;
-	if(decode_state->non_zero_count == 0) {
-	  decode_state->state = CHUNK_BEG;
-	}
-      } else {
-	decode_state->state = CHUNK_BEG;
-      }
+    if(decode_state->non_zero_count <= 0) {
+      // sanity check
+      fprintf(stderr, "ASSERT FAILED: non_zero_count should be positive on COPYING state\n");
+      exit(1);
     }
+    ((unsigned char*)decode_state->buffer)[ decode_state->i ] = byte;
+    //printf("2 writing byte %u\n", byte);
+    decode_state->non_zero_count--;
+    decode_state->i++;
+    if(decode_state->non_zero_count == 0) {
+      decode_state->state = CHUNK_BEG;
+    }
+  } else {
+    fprintf(stderr, "UNHANDLED CASE: unknown state %i\n", state);
+    exit(1);
   }
-  print_decode_state(decode_state);
+  //print_decode_state(decode_state);
 }
 
 // for debugging

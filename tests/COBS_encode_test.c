@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include "../src/COBS.h"
 
+static int test_case = 1;
+
 void test(void* input, size_t size, void *expected_output, size_t expected_output_size) {
-  printf("STARTING TEST\n");
+  printf("STARTING TEST %i\n", test_case);
   size_t expected_index = 0;
 
   /*
@@ -45,16 +47,17 @@ void test(void* input, size_t size, void *expected_output, size_t expected_outpu
 	}
     }
   }
-  
+
   encode_and_send(input, size, socket_callback);
   if(expected_output_size == expected_index) {
-    printf("EVERYTHING WENT WELL?\n");
+    printf("TEST %i PASSED\n", test_case);
   } else {
-    printf("ERROR: missing data\n");
+    printf("ERROR TEST %i: missing data\n",test_case);
     printf("Expected %zu bytes\n", expected_output_size);
     printf("Got %zu bytes\n", expected_index);
     exit(1);
   }
+  test_case++;
 }
 
 int main(int argc, char const *argv[]) {
@@ -168,7 +171,7 @@ int main(int argc, char const *argv[]) {
 
   test(input5, sizeof(input5), expected_output5, sizeof(expected_output5));
 
-  /*
+
   unsigned char input6[300];
   int i;
   for(i = 0; i < 300; i++) {
@@ -189,6 +192,7 @@ int main(int argc, char const *argv[]) {
   //print_bytes(expected_output6, sizeof(expected_output6));
   test(input6, sizeof(input6), expected_output6, sizeof(expected_output6));
 
+  /*
   unsigned char input7[600];
   for(i = 0; i < 600; i++) {
     // this is to guarantee that each element in the input is non-zero
@@ -218,5 +222,8 @@ int main(int argc, char const *argv[]) {
   //print_bytes(expected_output7, sizeof(expected_output7));
   test(input7, sizeof(input7), expected_output7, sizeof(expected_output7));
   */
+
+  printf("DONE\n");
+
 
 }

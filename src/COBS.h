@@ -25,7 +25,9 @@ void encode_and_send(void *msg, size_t size, SocketCallback write_to_socket);
 
 DecodeState *init_decode_state();
 
-void decode_bytes(void *bytes, size_t size, ActorCallback send_to_actor, DecodeState *decode_state);
+void free_decode_state(DecodeState *decode_state);
+
+void decode_bytes(void *bytes, size_t size, ActorCallback send_to_actor);
 
 void decode_step(unsigned char byte, ActorCallback send_to_actor, DecodeState *decode_state);
 

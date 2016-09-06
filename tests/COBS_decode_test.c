@@ -14,12 +14,6 @@ void test_1_message(
   void actor_callback(void *message, size_t size) {
     was_called = true;
     unsigned char *msg = (unsigned char*)message;
-    if(size != original_message_size) {
-      fprintf(stderr, "Sizes don't match:\n");
-      fprintf(stderr, "Expected %zu\n", original_message_size);
-      fprintf(stderr, "Got %zu\n", size);
-      exit(1);
-    }
     for(size_t i = 0; i < size; i++) {
       unsigned char decoded_byte = ((unsigned char*)message)[i];
       unsigned char expected_byte = ((unsigned char*)original_message)[i];
@@ -30,6 +24,14 @@ void test_1_message(
 	exit(1);
       }
     }
+
+    if(size != original_message_size) {
+      fprintf(stderr, "Sizes don't match:\n");
+      fprintf(stderr, "Expected %zu\n", original_message_size);
+      fprintf(stderr, "Got %zu\n", size);
+      exit(1);
+    }
+
     /*
     printf("RECEIVED %i\n", msg[0]);
     printf("RECEIVED %i\n", msg[1]);
@@ -38,8 +40,7 @@ void test_1_message(
     */
   }
 
-  DecodeState *decode_state = init_decode_state();
-  decode_bytes(encoded, encoded_size, actor_callback, decode_state);
+  decode_bytes(encoded, encoded_size, actor_callback);
 
   if(!was_called) {
     fprintf(stderr, "Callback was never called!\n");
@@ -125,7 +126,6 @@ int main(int argc, char const *argv[]) {
   
   test_1_message(encoded3, sizeof(encoded3), original_message3, sizeof(original_message3));
 
-  /*
   unsigned char original_message4[] = {
     0x05,
     0x03,
@@ -153,5 +153,5 @@ int main(int argc, char const *argv[]) {
     0x00
   };
   test_1_message(encoded4, sizeof(encoded4), original_message4, sizeof(original_message4));
-  */
+  
 }
