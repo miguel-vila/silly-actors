@@ -71,6 +71,10 @@ void decode_step(unsigned char byte, ActorCallback send_to_actor, DecodeState *d
       fprintf(stderr, "ASSERT FAILED: non_zero_count should be zero when the byte is zero\n");
       exit(1);
     }
+    if(decode_state->i <= 0) {
+      fprintf(stderr, "ASSERT FAILED: index i should be greater than or equal to 1 when completing a message\n");
+      exit(1);
+    }
     // we successfully read a message at this point
     send_to_actor(decode_state->buffer, decode_state->i);
     decode_state->state = INIT;	
