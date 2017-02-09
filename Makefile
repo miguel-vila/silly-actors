@@ -11,7 +11,7 @@ SOURCES_HS = $(wildcard src/*.h)
 OBJECTS = $(addprefix $(BUILD_DIR)/, $(SOURCES:.c=.o))
 TESTS = $(wildcard tests/*.c)
 
-CFLAGS  = -lpthread -g -std=gnu99
+CFLAGS  = -lpthread -g -std=gnu99 -Wall
 
 default: lib
 
